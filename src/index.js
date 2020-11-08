@@ -4,8 +4,9 @@ import {Spinner} from 'spin.js';
 const config = {
   rpcURL: 'https://api.baobab.klaytn.net:8651'
 }
-const cav = new Caver(config.rpcURL)
-const agContract = cav.klay.Contract(DEPLOYED_ABI, DEPLOYED_ADDRESS);
+const cav = new Caver(config.rpcURL);
+const agContract = new cav.klay.Contract(DEPLOYED_ABI, DEPLOYED_ADDRESS);
+
 const App = {
   auth: {
     accessType: 'keystore',
@@ -173,7 +174,7 @@ const App = {
     $('#address').append('<br>' + '<p>' + '내 계정 주소: ' + walletInstance.address + '</p>');   
     $('#contractBalance').append('<p>' + '이벤트 잔액: ' + cav.utils.fromPeb(await this.callContractBalance(), "KLAY") + ' KLAY' + '</p>');     
 
-    if (await  this.callOwner().toUpperCase() === walletInstance.address.toUpperCase()) {
+    if (await this.callOwner() === walletInstance.address) {
       $("#owner").show(); 
     }     
   },
@@ -218,7 +219,7 @@ const App = {
         spinner.stop();  
         alert("0.1 KLAY가 " + walletInstance.address + " 계정으로 지급되었습니다.");      
         $('#transaction').html("");
-        $('#transaction').append(`<p><a href='https://baobab.scope.klaytn.com/tx/${receipt.transactionHash}' target='_blank'>클레이튼 Scope에서 트랜젝션 확인</a></p>`);
+        $('#transaction').append(`<p><a href='https://baobab.klaytnscope.com/tx/${receipt.txHash}' target='_blank'>클레이튼 Scope에서 트랜젝션 확인</a></p>`);
         return agContract.methods.getBalance().call()
           .then(function (balance) {
             $('#contractBalance').html("");
